@@ -17,13 +17,10 @@ import { isCustomEntity } from '@/ui/components/alerts/spoof/custom-entities/cus
 
 type Constructor<T> = new (...args: any[]) => T
 
-let loaded = false
-export async function loadSources() {
-    if (loaded) return Promise.resolve()
-
-    await Promise.all([loadRemoteList(), loadLocalDb()]).then(() => {
-        loaded = true
-    })
+let localLoad: Promise<void> | undefined
+export async function loadSources(signal: AbortSignal) {
+    localLoad ??= loadLocalDb()
+    await Promise.all([loadRemoteList(signal), localLoad])
 }
 
 export class SourcesCollection {

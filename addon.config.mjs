@@ -5,7 +5,7 @@ const addonConfig = {
     directoryName: '78d083c5-0510-4c41-b3de-41aab30a9fc5',
     name: 'FckCensor',
     description: 'Автоматически убирает цензуру и позволяет делать это вручную.',
-    version: '2.1.2',
+    version: '2.1.3',
     author: [
         'Hazzz895',
         'forea.adoxid'
@@ -22,6 +22,7 @@ const addonConfig = {
     allowedUrls: [
         'https://github.com/',
         'https://raw.githubusercontent.com/',
+        'https://api.github.com/repos/Hazzz895/FckCensorData/contents/list_v2.json?ref=main',
         'https://pzomqvgckpgkshxhpite.supabase.co/',
         'https://t2.genius.com/unsafe/',
         'https://genius.com/',

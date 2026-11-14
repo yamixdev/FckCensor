@@ -4,23 +4,26 @@ import { modals, notifications as sdkNotifications } from "@pulsesync/addon-sdk"
 import { openExternalLink } from "@/utils/common";
 import addonConfig from "../../addon.config.mjs";
 import { getStorageBoolean, setStorageItem } from "@/utils/storage";
+import { warn } from '@/utils/logger'
 
-export function handleNotifications(notifications: Notification[]) {
+export async function handleNotifications(notifications: Notification[]) {
     for (const notification of notifications) {
-        if ((notification.version && !versionsSatisfies(addonConfig.version, notification.version)) ||
+        if (typeof notification?.id !== 'string' || typeof notification.message?.content !== 'string' ||
+            (notification.version && !versionsSatisfies(addonConfig.version, notification.version)) ||
             (notification.expires && new Date(notification.expires) < new Date()) ||
-            isNotificationHandled(notification) ||
-            !notification.message) continue;
+            isNotificationHandled(notification)) continue;
         
         const message = notification.message
 
         if (notification.type === "notification") {
-            const isCoverUrl = message.icon === undefined ? undefined : message.icon.startsWith('http')
-            sdkNotifications.info(message.content, {
+            const icon = typeof message.icon === 'string' ? message.icon : undefined
+            const isCoverUrl = icon?.startsWith('http')
+            await sdkNotifications.info(message.content, {
                 durationMs: message.durationMs,
-                icon: message.icon && !isCoverUrl ? message.icon as any : undefined,
-                coverUrl: isCoverUrl ? message.icon : undefined,
-            })
+                icon: icon && !isCoverUrl ? icon as any : undefined,
+                coverUrl: isCoverUrl ? icon : undefined,
+            }).then(() => saveHandleNotification(notification)).catch(cause => warn('Could not show catalog notification', cause))
+            continue
         }
         else {
             (notification.type === "alert" ? modals.alert : modals.confirm)({
@@ -39,10 +42,10 @@ export function handleNotifications(notifications: Notification[]) {
                 else if (!confirm && message.buttons.length >= 2 && message.buttons[1].href) {
                     openExternalLink(message.buttons[1].href)
                 }
-            })
+            }).catch(cause => warn('Could not show catalog dialog', cause))
         }
 
-        if (notification.type === "notification" || notification.once !== false) {
+        if (notification.once !== false) {
             saveHandleNotification(notification)
         }
     }

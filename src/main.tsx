@@ -61,7 +61,7 @@ export default defineAddon({
             prepareOptions()
             prepareDisabledTracksObserver()
             prepareSettingsOptions()
-            await loadSources()
+            await loadSources(api.signal)
             if (api.signal.aborted) throw new Error('Addon startup cancelled')
             requestSdkSync()
             await flushSdk()

@@ -27,6 +27,7 @@ export const DATA_GITHUB_BASE_URI = `${RAW_GITHUB_BASE_URI}/${DATA_PATH}/${DATA_
 export const DATA_LIST_V1_URI = `${DATA_GITHUB_BASE_URI}/list.json`;
 export const DATA_LIST_V2_URI = `${DATA_GITHUB_BASE_URI}/list_v2.json`;
 export const DATA_LIST_URI = DATA_LIST_V2_URI
+export const DATA_LIST_API_URI = `https://api.github.com/repos/${DATA_PATH}/contents/list_v2.json?ref=${DATA_GITHUB_BRANCH}`
 
 export const SUPABASE_PROJECT_ID = 'pzomqvgckpgkshxhpite'
 export const SUPABASE_BASE_URI = `https://${SUPABASE_PROJECT_ID}.supabase.co`;
